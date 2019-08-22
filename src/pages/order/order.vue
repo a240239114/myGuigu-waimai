@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import headGuide from '../../components/headGuide/headGuide'
+import headGuide from "../../components/headguide/headguide";
 
 export default {
   components:{
