@@ -5,6 +5,11 @@ import App from './App.vue';
 import VueRouter from 'vue-router';
 Vue.use(VueRouter);
 
+//导入MUI
+import MintUI from 'mint-ui'
+import 'mint-ui/lib/style.css'
+Vue.use(MintUI)
+
 import router from './router';
 
 
@@ -13,9 +18,7 @@ import router from './router';
 //导入Store
 import store from './store'
 
-// Vue.http.options.root = 'http://192.168.31.93:3000';
 
-// Vue.http.options.root = 'http://guigu_zhipinjiekou.gjxbewater.cn:8080';
 
 
 

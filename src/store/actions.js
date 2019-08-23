@@ -37,7 +37,7 @@ export default {
     // 提交一个mutation
     if (result.code === 0) {
       const address = result.data
-      console.log("result=======>"+result)
+      // console.log("result=======>"+result)
       commit(RECEIVE_ADDRESS, { address })
     }
   },

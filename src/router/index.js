@@ -16,6 +16,7 @@ export default new VueRouter({
     {path: '/search',component:search},
     {path: '/order',component:order},
     {path: '/profile',component:profile},
-    {path: '/login',component:login}
+    {path: '/login',component:login},
+    {path: '/',redirect:'/home'}
   ]
 })

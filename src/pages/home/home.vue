@@ -45,58 +45,8 @@
           <i class="iconfont icon-xuanxiang"></i>
           <span class="shop_header_title">附近商家</span>
         </div>
-        <div class="shop_container">
-          <ul class="shop_list">
-            <li class="shop_li border-1px" v-for="(item,index) in shops" :key="index">
-              <a>
-                <div class="shop_left">
-                  <img class="shop_img" src="baseImageUrl+/+item.image_path" />
-                </div>
-                <div class="shop_right">
-                  <section class="shop_detail_header">
-                    <h4 class="shop_title ellipsis">{{item.name}}</h4>
-                    <ul class="shop_detail_ul">
-                      <li
-                        class="supports"
-                        v-for="(item1,index) in item.supports"
-                        :key="index"
-                      >{{item1.icon_name}}</li>
 
-                      <!-- <li
-                        class="supports"
-                        v-for="(support, index) in shop.supports"
-                        :key="index"
-                      >{{support.icon_name}}</li>-->
-                    </ul>
-                  </section>
-                  <section class="shop_rating_order">
-                    <section class="shop_rating_order_left">
-                      <div class="star star-24">
-                        <span class="star-item on"></span>
-                        <span class="star-item on"></span>
-                        <span class="star-item on"></span>
-                        <span class="star-item half"></span>
-                        <span class="star-item off"></span>
-                      </div>
-                      <div class="rating_section">{{item.rating}}</div>
-                      <div class="order_section">{{item.rating_count}}</div>
-                    </section>
-                    <section class="shop_rating_order_right">
-                      <span class="delivery_style delivery_right">{{item.delivery_mode.text}}</span>
-                    </section>
-                  </section>
-                  <section class="shop_distance">
-                    <p class="shop_delivery_msg">
-                      <span>¥{{item.float_minimum_order_amount}}起送</span>
-                      <span class="segmentation">/</span>
-                      <span>配送费约¥{{item.float_delivery_fee}}</span>
-                    </p>
-                  </section>
-                </div>
-              </a>
-            </li>
-          </ul>
-        </div>
+        <shopList></shopList>
       </div>
 
       <img src="./images/shop_back.svg" alt v-for="item in 6" :key="item" v-else />
@@ -106,6 +56,8 @@
 
 <script>
 import headGuide from "../../components/headguide/headguide";
+import shopList from "../../components/shoplist/shoplist";
+
 //引入swiper.css
 // import 'swiper/dist/css/swiper.min.css'
 import "swiper/dist/css/swiper.min.css";
@@ -120,17 +72,19 @@ export default {
       baseImageUrl: "https://fuss10.elemecdn.com"
     };
   },
+
   mounted() {
     //调用actions中的方法
     // this.$store.dispatch("getAddress");
     this.$store.dispatch("getCategorys");
     this.$store.dispatch("getShops");
     this.getAddress();
+
+    console.log(this);
   },
 
   computed: {
     ...mapState(["categorys", "shops", "address"]),
-    
 
     //把categorys变成二位数组
     categorysArr() {
@@ -158,7 +112,7 @@ export default {
     }
   },
 
-  methods:{
+  methods: {
     ...mapActions(["getAddress"])
   },
 
@@ -184,7 +138,8 @@ export default {
   },
 
   components: {
-    headGuide
+    headGuide,
+    shopList
   }
 };
 </script>
