@@ -1,19 +1,18 @@
 <template>
   <!--我的-->
   <div>
-    
     <section class="profile">
-
       <headGuide tittle="我的"></headGuide>
-   
+
       <section class="profile-number">
-        <router-link to="/login" class="profile-link">
+        <router-link :to="userInfo._id?'/home':'/login'" class="profile-link">
           <div class="profile_image">
             <i class="iconfont icon-person"></i>
           </div>
 
           <div class="user-info">
-            <p class="user-info-top">登录/注册</p>
+            <p class="user-info-top" v-if="userInfo._id">{{userInfo._id}}</p>
+            <p class="user-info-top" v-else>登录/注册</p>
             <p>
               <span class="user-icon">
                 <i class="iconfont icon-shouji icon-mobile"></i>
@@ -22,12 +21,12 @@
             </p>
           </div>
 
-
           <span class="arrow">
             <i class="iconfont icon-jiantou1"></i>
           </span>
         </router-link>
       </section>
+
       <section class="profile_info_data border-1px">
         <ul class="info_data_list">
           <a href="javascript:" class="info_data_link">
@@ -50,6 +49,7 @@
           </a>
         </ul>
       </section>
+
       <section class="profile_my_order border-1px">
         <!-- 我的订单 -->
         <a href="javascript:" class="my_order">
@@ -88,6 +88,7 @@
           </div>
         </a>
       </section>
+
       <section class="profile_my_order border-1px">
         <!-- 服务中心 -->
         <a href="javascript:" class="my_order">
@@ -102,15 +103,37 @@
           </div>
         </a>
       </section>
+
+      <section class="profile_my_order border-1px">
+        <!-- <mt-button type="danger" style="width: 100%" v-if="userInfo._id">退出登陆</mt-button> -->
+        <button @click="layOut">退出登录</button>
+      </section>
     </section>
   </div>
 </template>
 
 <script>
 import headGuide from "../../components/headguide/headguide";
+import { mapState, mapActions } from "vuex";
+
 export default {
+  mounted() {},
+
   components: {
     headGuide
+  },
+
+  computed: {
+    ...mapState(["userInfo"])
+  },
+
+  methods: {
+    layOut() {
+      // 退出登录
+      console.log('退出登录')
+      this.$store.dispatch("logout");
+      this.$router.push('/login');
+    }
   }
 };
 </script>

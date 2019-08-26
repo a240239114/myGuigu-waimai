@@ -22,7 +22,7 @@
               >{{showTime > 0? `剩余${showTime}s`:"获取验证码"}}</button>
             </section>
             <section class="login_verification">
-              <input type="tel" maxlength="8" placeholder="验证码" v-model="checkCode" />
+              <input type="tel" maxlength="8" placeholder="验证码" v-model="code" />
             </section>
             <section class="login_hint">
               温馨提示：未注册硅谷外卖帐号的手机号，登录时将自动注册，且代表已同意
@@ -33,11 +33,11 @@
           <div :class="[loginWay?'':'on']">
             <section>
               <section class="login_message">
-                <input type="tel" maxlength="11" placeholder="手机/邮箱/用户名" v-model="phone" />
+                <input type="tel" maxlength="11" placeholder="手机/邮箱/用户名" v-model="name" />
               </section>
 
               <section class="login_verification" v-if="showPwdFlag">
-                <input type="password" maxlength="8" placeholder="密码" v-model="phonePwd" />
+                <input type="password" maxlength="8" placeholder="密码" v-model="pwd" />
                 <div class="switch_button off" @click="showPwd">
                   <div class="switch_circle"></div>
                   <span class="switch_text">...</span>
@@ -45,7 +45,7 @@
               </section>
 
               <section class="login_verification" v-else>
-                <input type="tel" maxlength="8" placeholder="密码" v-model="phonePwd" />
+                <input type="tel" maxlength="8" placeholder="密码" v-model="pwd" />
                 <div class="switch_button on" @click="showPwd">
                   <div class="switch_circle button_right"></div>
                   <span class="switch_text">abc</span>
@@ -54,11 +54,17 @@
 
               <section class="login_message">
                 <input type="text" maxlength="11" placeholder="验证码" v-model="captcha" />
-                <img class="get_verification" src="./images/captcha.svg" alt="captcha" />
+                <img
+                  class="get_verification"
+                  ref="captcha"
+                  src="http://guigu_zhipinjiekou.gjxbewater.cn:8080/captcha"
+                  alt="captcha"
+                  @click="changeCaptcha"
+                />
               </section>
             </section>
           </div>
-          <button class="login_submit" @click.prevent="checkData">登录</button>
+          <button class="login_submit" @click.prevent="gotoLogin">登录</button>
         </form>
         <a href="javascript:;" class="about_us">关于我们</a>
       </div>
@@ -66,7 +72,7 @@
         <i class="iconfont icon-jiantou2"></i>
       </a>
 
-      <alertTip v-show="showTip" :alertText="alertText" @closeTip='closeTip'></alertTip>
+      <alertTip v-show="showTip" :alertText="alertText" @closeTip="closeTip"></alertTip>
     </div>
   </section>
 </template>
@@ -74,22 +80,28 @@
 <script>
 // import { Toast } from "mint-ui";
 import alertTip from "../../components/AlertTip/alertTip";
+import { reqPwdLogin, reqSendCode, reqSmsLogin } from "../../api";
+
+// import ajax from '../../api/ajax'
 
 export default {
   data: function() {
     return {
       loginWay: true,
       phone: "", //手机号码
-      checkCode: "", //验证码
-      phonePwd: "", //手机密码
-      captcha: "", //验证码
-      //  showText:'获取验证码',
+      code: "", //验证码
+      pwd: '', //手机密码
+      captcha: '', //验证码
+      name: '',
       showTime: 0,
       showPwdFlag: true,
       showTip: false, //显示和隐藏alert
       alertText: ""
     };
   },
+
+
+  mounted(){},
 
   components: {
     alertTip
@@ -106,6 +118,9 @@ export default {
 
       //获取验证码
       if (this.showTime == 0) {
+        //获取验证码
+        reqSendCode(this.phone);
+
         //避免重复点击出现BUG
         this.showTime = 30;
         var that = this;
@@ -128,9 +143,8 @@ export default {
       this.alertText = alertText;
     },
 
-    checkData() {
-      //检查提交的信息
-
+    async gotoLogin() {
+      //前台检查
       if (this.loginWay) {
         //短信登录检查
         if (this.phone == "") {
@@ -138,17 +152,59 @@ export default {
           // Toast("请输入手机号");
 
           this.alertTipMethod("请输入手机号");
-        } else if (this.checkCode == "") {
+        } else if (this.code == "") {
           this.alertTipMethod("请输入验证码");
+        } else {
+          //短信登录
+          const { phone, code } = this;
+          const res = await reqSmsLogin({ phone, code });
+          console.log(res);
+          if (res.code == 1) {
+            this.alertTipMethod("验证码错误");
+          } else {
+            this.alertTipMethod("登录成功");
+
+            //保存用户信息
+            this.$store.dispatch("recordUser", res.data);
+
+            //页面跳转
+            this.$router.push("/profile");
+          }
         }
       } else {
         //密码登录检查
-        if (this.phone == "") {
-          this.alertTipMethod("请输入手机号");
-        } else if (this.phonePwd == "") {
+        if (this.name == "") {
+          this.alertTipMethod("请输入用户名");
+        } else if (this.pwd == "") {
           this.alertTipMethod("请输入密码");
         } else if (this.captcha == "") {
           this.alertTipMethod("请输入图形验证码");
+        } else {
+          // var that = this;
+          //密码登录
+          const { name, pwd, captcha } = this;
+          console.log(name, pwd, captcha); 
+          
+          
+          const res = await reqPwdLogin({name, pwd, captcha});
+          console.log(res);
+
+          if (res.code == 1) {
+            this.alertTipMethod("验证码错误");
+            this.changeCaptcha();
+
+          } else {
+            this.alertTipMethod("登录成功");
+
+            //保存用户信息
+            this.$store.dispatch("recordUser", res.data);
+
+            //页面跳转
+            this.$router.push("/profile");
+          }
+
+
+
         }
       }
     },
@@ -160,7 +216,13 @@ export default {
 
     closeTip() {
       this.showTip = false;
-      this.alertText = '';
+      this.alertText = "";
+    },
+
+    changeCaptcha() {
+      //点击验证码级自动重新获取
+      this.$refs.captcha.src =
+        "http://guigu_zhipinjiekou.gjxbewater.cn:8080/captcha?" + new Date();
     }
   },
 

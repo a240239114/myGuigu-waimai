@@ -9,10 +9,15 @@
 import footGuide from "./components/footGuide/footGuide";
 
 export default {
+  mounted() {
+    //获取用户详情
+    this.$store.dispatch("getUserInfo");
+  },
+
   components: {
     footGuide
   }
-}
+};
 </script>
 
 

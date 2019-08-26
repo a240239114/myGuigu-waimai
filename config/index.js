@@ -22,6 +22,7 @@ module.exports = {
     proxyTable: {
       '/api': {
         target: 'http://guigu_zhipinjiekou.gjxbewater.cn:8080',  //目标接口域名
+        // target: 'http://192.168.31.93:3006', 
         changeOrigin: true,  //是否跨域
         pathRewrite: {
           '^/api': ''   //重写接口

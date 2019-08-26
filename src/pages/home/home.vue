@@ -9,7 +9,7 @@
         </span>
 
         <span class="header_login" slot="right">
-          <span class="header_login_text">登录|注册</span>
+          <span class="header_login_text">{{userInfo._id?'已登录':'登录|注册'}}</span>
         </span>
       </headGuide>
 
@@ -25,7 +25,7 @@
                 :key="index"
               >
                 <div class="food_container">
-                  <img src="baseImageUrl+item.image_url" />
+                  <img :src="baseImageUrl+item.image_url" />
                 </div>
                 <span>{{item.title}}</span>
               </a>
@@ -84,7 +84,7 @@ export default {
   },
 
   computed: {
-    ...mapState(["categorys", "shops", "address"]),
+    ...mapState(["categorys", "shops", "address","userInfo"]),
 
     //把categorys变成二位数组
     categorysArr() {
