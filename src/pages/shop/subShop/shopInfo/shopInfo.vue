@@ -20,7 +20,9 @@
           <div
             class="activity-item"
             v-for="(support, index) in info.supports"
-            :key="index">
+            :key="index"
+            :class="classArr[support.type]"
+          >
             <span class="content-tag">
               <span class="mini-tag">{{support.name}}</span>
             </span>
@@ -70,17 +72,42 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
-export default {
+import { mapState } from "vuex";
+import Bscroll from "better-scroll";
+// import func from '../../../../../vue-temp/vue-editor-bridge';
 
-  computed:{
+export default {
+  data() {
+    return {
+      classArr: ["activity-green", "activity-red", "activity-orange"]
+    };
+  },
+
+  mounted() {
+    if (this.info) {
+      this.$nextTick(() => {
+        new Bscroll(".shop-info");
+
+        let listWidth = 126;
+        let ulWidth = listWidth * 5;
+        $(".pic-list").width(ulWidth + "px");
+
+        new Bscroll(".pic-wrapper", {
+          scrollX: true,
+          click: true
+        });
+      });
+    }
+  },
+
+  computed: {
     ...mapState(["info"])
   }
 };
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
-@import '../../../common/stylus/mixins.styl';
+@import '../../../../common/stylus/mixins.styl';
 
 .shop-info {
   position: absolute;

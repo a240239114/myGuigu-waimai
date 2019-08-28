@@ -1,6 +1,6 @@
 <template>
   <footer class="footer_guide border-1px">
-    <router-link to="/home" class="guide_item" :class="[{'on':$route.path == '/home'}]">
+    <router-link to="/home" class="guide_item" :class="[{'on':$route.path =='/home'||'shop/Goods'}]">
       <span class="item_icon">
         <i class="iconfont icon-waimai"></i>
       </span>

@@ -1,6 +1,7 @@
 <template>
   <div>
     <shopHead></shopHead>
+
     <div class="tab">
       <div class="tab-item">
         <router-link to="/shop/Goods" replace>点餐</router-link>
@@ -12,24 +13,25 @@
         <router-link to="/shop/Info" replace>商家</router-link>
       </div>
     </div>
+    <!-- <food></food> -->
 
-    <router-view></router-view>
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
   </div>
 </template>
 
 <script>
 import shopHead from "./shopHead";
 
-
 export default {
-  mounted(){
+  mounted() {
     this.$store.dispatch("getShopInfo");
-    this.$store.dispatch("getShopGoods");
-    this.$store.dispatch("getShopRatings");
-  }, 
+  },
 
   components: {
     shopHead
+    // food
   }
 };
 </script>

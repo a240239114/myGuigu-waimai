@@ -105,7 +105,7 @@
       </section>
 
       <section class="profile_my_order border-1px">
-        <!-- <mt-button type="danger" style="width: 100%" v-if="userInfo._id">退出登陆</mt-button> -->
+        <mt-button type="danger" style="width: 100%" v-if="userInfo._id">退出登陆</mt-button>
         <button @click="layOut">退出登录</button>
       </section>
     </section>
@@ -115,6 +115,9 @@
 <script>
 import headGuide from "../../components/headguide/headguide";
 import { mapState, mapActions } from "vuex";
+// import Vue from 'vue';
+// import { Button } from "mint-ui";
+// Vue.component(Button.name, Button);
 
 export default {
   mounted() {},
@@ -130,9 +133,9 @@ export default {
   methods: {
     layOut() {
       // 退出登录
-      console.log('退出登录')
+      console.log("退出登录");
       this.$store.dispatch("logout");
-      this.$router.push('/login');
+      this.$router.push("/login");
     }
   }
 };

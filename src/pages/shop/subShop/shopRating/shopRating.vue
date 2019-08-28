@@ -10,12 +10,12 @@
         <div class="overview-right">
           <div class="score-wrapper">
             <span class="title">服务态度</span>
-            <!-- <Star :score="info.serviceScore" :size="36" /> -->
+            <Star :score="info.serviceScore" :size="36" />
             <span class="score">{{info.serviceScore}}</span>
           </div>
           <div class="score-wrapper">
             <span class="title">商品评分</span>
-            <!-- <Star :score="info.foodScore" :size="36" /> -->
+            <Star :score="info.foodScore" :size="36" />
             <span class="score">{{info.foodScore}}</span>
           </div>
           <div class="delivery-wrapper">
@@ -29,20 +29,32 @@
 
       <div class="ratingselect" v-if="ratings">
         <div class="rating-type border-1px">
-          <span class="block positive" >
+          <span
+            class="block positive"
+            :class="{'active':selectType ===2}"
+            @click="setSelectType(2)"
+          >
             全部
             <span class="count">{{ratings.length}}</span>
           </span>
-          <span class="block positive">
+          <span
+            class="block positive"
+            :class="{'active':selectType ===0}"
+            @click="setSelectType(0)"
+          >
             满意
             <span class="count"></span>
           </span>
-          <span class="block negative">
+          <span
+            class="block negative"
+            :class="{'active':selectType ===1}"
+            @click="setSelectType(1)"
+          >
             不满意
             <span class="count"></span>
           </span>
         </div>
-        <div class="switch">
+        <div class="switch" :class="{'on':duigouFlag}" @click="changeDuigouFlag">
           <span class="iconfont icon-check_circle"></span>
           <span class="text">只看有内容的评价</span>
         </div>
@@ -50,14 +62,14 @@
 
       <div class="rating-wrapper" v-if="ratings">
         <ul>
-          <li class="rating-item" v-for="(rating,index) in ratings" :key="index">
+          <li class="rating-item" v-for="(rating,index) in commentShowArr" :key="index">
             <div class="avatar">
               <img width="28" height="28" :src="rating.avatar" />
             </div>
             <div class="content">
               <h1 class="name">{{rating.username}}</h1>
               <div class="star-wrapper">
-                <!-- <Star :score="rating.score" :size="24" /> -->
+                <Star :score="rating.score" :size="24" />
                 <span class="delivery">{{rating.deliveryTime}}</span>
               </div>
               <p class="text">{{rating.text}}</p>
@@ -68,7 +80,7 @@
                 ></span>
                 <span class="item" v-for="(item, index) in rating.recommend" :key="index">{{item}}</span>
               </div>
-              <div class="time">{{rating.rateTime}}</div>
+              <div class="time">{{rating.rateTime|date-format}}</div>
             </div>
           </li>
         </ul>
@@ -80,16 +92,80 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
+import Star from "../../../../components/stars/stars";
+import BScroll from "better-scroll";
 
 export default {
-  computed:{
-    ...mapState(["ratings","info"])
+  data() {
+    return {
+      duigouFlag: true,
+      selectType: 2 //0满意 1不满意 2全部
+    };
+  },
+
+  mounted() {
+    this.$store.dispatch("getShopRatings", () => {
+      this.$nextTick(() => {
+        //初始化滚动条
+        new BScroll(this.$refs.ratings, {
+          click: true
+        });
+      });
+    });
+  },
+
+  computed: {
+    ...mapState(["ratings", "info"]),
+
+    commentShowArr() {
+      const { selectType, duigouFlag, ratings } = this;
+      return ratings.filter((rating, index) => {
+        /**
+         * 影响因素
+         * selectType  //0满意 1不满意 2全部
+         *
+         * 2 :不用过滤,直接全部要
+         * 0/1 :rateType = selectType
+         *
+         * selectType ===2 || rateType = selectType
+         *
+         *
+         * duigouFlag
+         *
+         * true :只显示有评论的内容
+         * false  : 所有的都显示
+         *
+         *
+         *
+         * */
+
+        const { rateType, text } = rating;
+        return (
+          (selectType === 2 || rateType == selectType) &&
+          (!duigouFlag || text.length > 0)
+        );
+      });
+    }
+  },
+
+  methods: {
+    setSelectType(n) {
+      this.selectType = n;
+    },
+
+    changeDuigouFlag() {
+      this.duigouFlag = !this.duigouFlag;
+    }
+  },
+
+  components: {
+    Star
   }
 };
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
-@import '../../../common/stylus/mixins.styl';
+@import '../../../../common/stylus/mixins.styl';
 
 .ratings {
   position: absolute;
@@ -206,7 +282,7 @@ export default {
       font-size: 0;
 
       .block {
-        display: inline-block;
+        // display: inline-block;
         padding: 8px 12px;
         margin-right: 8px;
         line-height: 16px;

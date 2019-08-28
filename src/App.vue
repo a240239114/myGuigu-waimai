@@ -1,7 +1,8 @@
 <template>
   <div>
     <router-view></router-view>
-    <footGuide></footGuide>
+    <footGuide v-if="showFootFlag"></footGuide>
+    <!-- <mt-button type="danger" style="width: 100%">退出登陆</mt-button> -->
   </div>
 </template>
 
@@ -12,6 +13,23 @@ export default {
   mounted() {
     //获取用户详情
     this.$store.dispatch("getUserInfo");
+
+    console.log(this.$route.path);
+  },
+
+  computed: {
+    showFootFlag() {
+      if (
+        this.$route.path == "/home" ||
+        this.$route.path == "/order" ||
+        this.$route.path == "/profile" ||
+        this.$route.path == "/search"
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    }
   },
 
   components: {

@@ -3,17 +3,18 @@ import Vue from 'vue';
 Vue.use(VueRouter);
 
 //引入组件
-import home from '../pages/home/home.vue';
-import search from '../pages/search/search.vue';
-import order from '../pages/order/order.vue';
-import profile from '../pages/profile/profile.vue';
 import login from '../pages/login/login.vue';
 
-import shopGoods from '../pages/shop/subShop/shopGoods.vue';
-import shopInfo from '../pages/shop/subShop/shopInfo.vue';
-import shopRating from '../pages/shop/subShop/shopRating.vue';
+import shopGoods from '../pages/shop/subShop/shopGoods/shopGoods.vue';
+import shopInfo from '../pages/shop/subShop/shopInfo/shopInfo.vue';
+import shopRating from '../pages/shop/subShop/shopRating/shopRating.vue';
 import shop from '../pages/shop/shop.vue';
 
+
+const home = ()=> import('../pages/home/home.vue');
+const search = ()=> import('../pages/search/search.vue');
+const order =()=> import('../pages/order/order.vue');
+const profile =()=> import('../pages/profile/profile.vue');
 
 
 export default new VueRouter({

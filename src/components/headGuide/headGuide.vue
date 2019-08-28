@@ -4,7 +4,7 @@
 
     <slot name="left"></slot>
 
-    <span class="header_title">
+    <span class="header_title" v-if="tittle">
       <span class="header_title_text ellipsis">{{tittle}}</span>
     </span>
 

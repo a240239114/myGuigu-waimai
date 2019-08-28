@@ -80,7 +80,7 @@ export default {
     this.$store.dispatch("getShops");
     this.getAddress();
 
-    console.log(this);
+    // console.log(this);
   },
 
   computed: {
